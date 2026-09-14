@@ -1,3 +1,4 @@
+import ScrollToTop from './components/ScrollToTop';
 import React, { useState, useEffect } from 'react';
 import { PageRoute } from './types';
 import { Header } from './components/Header';
@@ -82,7 +83,8 @@ export const App: React.FC = () => {
             kdvantrag.de – KDV-Antrag Leitfaden &amp; Vorlagen
           </a>
         </div>
-        <Analytics />
+        <ScrollToTop />
+      <Analytics />
       </div>
     );
   }
@@ -103,6 +105,7 @@ export const App: React.FC = () => {
 
       <StickyMobileBar setRoute={handleSetRoute} />
       <Footer setRoute={handleSetRoute} />
+      <ScrollToTop />
       <Analytics />
     </div>
   );

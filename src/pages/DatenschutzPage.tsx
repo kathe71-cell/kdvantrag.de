@@ -50,12 +50,7 @@ export const DatenschutzPage: React.FC<DatenschutzPageProps> = ({ setRoute }) =>
             <h2 className="text-base font-bold text-slate-950">
               1. Name und Kontaktdaten des Verantwortlichen
             </h2>
-            <div className="text-slate-800 space-y-1">
-              <p className="font-bold">Jens Kathe</p>
-              <p>Hansastraße 6, 34119 Kassel, Deutschland</p>
-              <p>E-Mail: jens@kathe.org</p>
-              <p>Telefon: +49 178 6652623</p>
-            </div>
+            <div className="text-slate-800"><p>Verantwortlicher im Sinne der DSGVO ist der im Impressum genannte Betreiber. Vollständige Kontaktdaten finden Sie im <a href="/impressum" className="text-amber-700 hover:underline font-semibold">Impressum</a>.</p></div>
           </div>
 
           {/* 2. Formular-Assistent */}

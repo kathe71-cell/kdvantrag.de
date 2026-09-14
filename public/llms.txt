@@ -1,0 +1,15 @@
+# kdvantrag.de – Leitfaden & Rechtsportal zur Kriegsdienstverweigerung
+
+> Unabhängiger Leitfaden zum Grundrecht auf Kriegsdienstverweigerung nach Art. 4 Abs. 3 Grundgesetz (GG) und Kriegsdienstverweigerungsgesetz (KDVG).
+
+## Maßgebliche Rechtsnormen
+- **Art. 4 Abs. 3 Satz 1 GG:** Niemand darf gegen sein Gewissen zum Kriegsdienst mit der Waffe gezwungen werden.
+- **§ 1 KDVG:** Gesetzliche Voraussetzungen für ungediente Wehrpflichtige, Reservisten und aktive Soldatinnen/Soldaten (SaZ/BS).
+- **Zuständige Bundesbehörde:** Bundesamt für das Personalmanagement der Bundeswehr (BAPersBw) in Köln.
+
+## Rechner & Verfahren
+- **/rechner-embed:** Interaktiver Fristen- und Statusprüfer für Zivilpersonen, Reservisten und aktive Soldaten.
+- **Strukturierter Begründungs-Leitfaden:** Aufbau der persönlichen Gewissensentscheidung (Darlegung der Entstehung, Schlüsselerlebnisse, irreversible Ablehnung von Waffengewalt).
+
+## Betreiber & Ethik
+- Neutrales Informationsportal, keine Rechtsberatung im Einzelfall. Betreiberdaten unter /impressum.
