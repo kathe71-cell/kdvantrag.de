@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Scale, Mail, Phone, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Shield, Scale, Mail, Phone, ArrowLeft } from 'lucide-react';
 import { PageRoute } from '../types';
 
 interface ImpressumPageProps {
@@ -21,7 +21,7 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
         </button>
 
         <div className="border-b border-slate-200 pb-6 mb-8">
-          <span className="text-xs font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-md border border-amber-200">
+          <span className="text-xs font-black uppercase tracking-wider text-amber-800 bg-amber-50 px-3 py-1 rounded-md border border-amber-200">
             Gesetzliche Anbieterkennzeichnung
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-950 mt-3 tracking-tight">
@@ -32,10 +32,10 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
           </p>
         </div>
 
-        {/* Impressum Content according to exact prompt guidelines */}
+        {/* Impressum Content nach Vorgabe */}
         <div className="space-y-8 text-sm text-slate-700 leading-relaxed">
           
-          <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             <h2 className="text-lg font-bold text-slate-900 border-b border-slate-200 pb-2">
               Angaben gemäß § 5 DDG:
             </h2>
@@ -50,14 +50,14 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
               <p className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>E-Mail: </span>
-                <a href="mailto:jens@kathe.org" className="text-amber-700 font-bold hover:underline">
+                <a href="mailto:jens@kathe.org" className="text-amber-800 font-bold hover:underline">
                   jens@kathe.org
                 </a>
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>Telefon: </span>
-                <a href="tel:+491786652623" className="text-amber-700 font-bold hover:underline">
+                <a href="tel:+491786652623" className="text-amber-800 font-bold hover:underline">
                   +49 178 6652623
                 </a>
               </p>
@@ -65,7 +65,7 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
 
             <div className="pt-3 border-t border-slate-200">
               <p className="font-semibold text-slate-900">Umsatzsteuer-Status:</p>
-              <p className="text-slate-600">Kleinunternehmer nach § 19 UStG (keine gesonderte Ausweisung der Umsatzsteuer).</p>
+              <p className="text-slate-600">Kleinunternehmer nach § 19 UStG (keine Ausweisung der Umsatzsteuer).</p>
             </div>
 
             <div className="pt-3 border-t border-slate-200">
@@ -85,34 +85,22 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
             </p>
           </div>
 
-          {/* Kein RDG Hinweis */}
+          {/* RDG Hinweis */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
             <h2 className="text-base font-bold text-slate-950 flex items-center gap-2">
               <Scale className="w-5 h-5 text-amber-600" />
               <span>Hinweis nach dem Rechtsdienstleistungsgesetz (RDG)</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Die auf dieser Website publizierten Inhalte, Berechnungsbeispiele, Formulierungshilfen und Checklisten dienen ausschließlich der allgemeinen Information und Orientierung. Sie stellen keine Rechtsberatung im Sinne des Rechtsdienstleistungsgesetzes (RDG) dar. Es findet keine individuelle Fallprüfung durch Rechtsanwälte über dieses Portal statt. Sollten Sie im Einzelfall rechtlichen Beistand benötigen, wenden Sie sich bitte an eine anerkannte Friedens- und Kriegsdienstverweigerungs-Beratungsstelle (z. B. DFG-VK, EAK) oder an einen zugelassenen Fachanwalt für Wehr- oder Verwaltungsrecht.
+              Die auf dieser Website publizierten Inhalte, Berechnungsbeispiele, Formulierungshilfen und Checklisten dienen ausschließlich der allgemeinen Information und Orientierung. Sie stellen keine Rechtsberatung im Sinne des Rechtsdienstleistungsgesetzes (RDG) dar. Es findet keine individuelle Fallprüfung durch Rechtsanwälte über dieses Portal statt. Sollten Sie im Einzelfall rechtlichen Beistand benötigen, wenden Sie sich bitte an eine anerkannte Friedens- und Kriegsdienstverweigerungs-Beratungsstelle (z. B. DFG-VK, EAK) oder an einen zugelassenen Fachanwalt.
             </p>
           </div>
 
-          {/* EU-Streitschlichtung & VSBG */}
+          {/* Verbraucherstreitbeilegung (VSBG) */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
             <h2 className="text-base font-bold text-slate-950">
               Verbraucherstreitbeilegung / Universalschlichtungsstelle
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit, die Sie unter folgendem Link finden:{' '}
-              <a 
-                href="https://ec.europa.eu/consumers/odr" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-amber-700 font-bold hover:underline inline-flex items-center gap-1"
-              >
-                <span>https://ec.europa.eu/consumers/odr</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>.
-            </p>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
             </p>
@@ -124,7 +112,7 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
               Haftung für Inhalte &amp; externe Links
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+              Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen. Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
             </p>
           </div>
 

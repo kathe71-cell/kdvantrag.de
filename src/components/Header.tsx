@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, setRoute }) => {
               className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm shadow-sm transition-all transform active:scale-95 flex items-center gap-2 border border-amber-600/30"
             >
               <FileText className="w-4 h-4 stroke-[2.5]" />
-              <span>Antrag zusammenstellen *</span>
+              <span>Antrag zusammenstellen</span>
             </button>
           </div>
 
@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, setRoute }) => {
               onClick={() => navigateTo('vorlagen')}
               className="px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-extrabold text-xs flex sm:hidden"
             >
-              Muster *
+              Muster
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -169,13 +169,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, setRoute }) => {
               className="w-full py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-center shadow-md flex items-center justify-center gap-2"
             >
               <FileText className="w-4 h-4 stroke-[2.5]" />
-              KDV-Antrag jetzt vorbereiten *
+              KDV-Antrag jetzt vorbereiten
             </button>
-          </div>
-          <div className="pt-2 text-center">
-            <span className="text-[11px] text-slate-400">
-              * Werbelink / Partnerempfehlung für Rechtsberatung &amp; Formulardienste
-            </span>
           </div>
         </div>
       )}

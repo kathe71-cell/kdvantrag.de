@@ -1,155 +1,185 @@
 import React, { useState } from 'react';
-import { FileText, Copy, Printer, Check, ShieldAlert } from 'lucide-react';
+import { FileText, Copy, Printer, Check, ShieldAlert, AlertCircle } from 'lucide-react';
 import { UserStatus } from '../types';
 
 export const DocumentGenerator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'anschreiben' | 'lebenslauf' | 'begruendung'>('anschreiben');
   
-  // Formular-State
+  // Initialer Zustand: Leer lassen (keine vorausgefüllten Beispieldaten)
   const [formData, setFormData] = useState({
-    name: 'Max Mustermann',
-    strasse: 'Musterstraße 12',
-    plzOrt: '10115 Berlin',
-    geburtsdatum: '15.05.2003',
-    geburtsort: 'Berlin',
-    telefon: '0170 1234567',
-    email: 'max.mustermann@example.de',
-    status: 'ungedient' as UserStatus,
-    pk: '', // Personenkennziffer falls Soldat/Reservist
-    dienstgrad: '',
-    bundesland: 'Berlin'
+    name: '',
+    strasse: '',
+    plzOrt: '',
+    geburtsdatum: '',
+    geburtsort: '',
+    telefon: '',
+    email: '',
+    status: 'ungedient_vor_einberufung' as UserStatus,
+    pk: '',
+    dienstgrad: ''
   });
 
   const [copied, setCopied] = useState(false);
+  const [validationWarning, setValidationWarning] = useState<string | null>(null);
 
-  // Text-Generierung für das formlose Anschreiben
+  // Prüfe unvollständige Pflichtangaben
+  const checkValidation = () => {
+    const missing: string[] = [];
+    if (!formData.name.trim()) missing.push('Name');
+    if (!formData.strasse.trim()) missing.push('Straße & Hausnummer');
+    if (!formData.plzOrt.trim()) missing.push('PLZ & Ort');
+    if (!formData.geburtsdatum.trim()) missing.push('Geburtsdatum');
+
+    if (missing.length > 0) {
+      setValidationWarning(`Folgende Stammdaten sind noch nicht eingetragen: ${missing.join(', ')}. Bitte ergänzen Sie diese vor dem Absenden.`);
+    } else {
+      setValidationWarning(null);
+    }
+  };
+
+  // Text-Generierung für das formlose Anschreiben nach DIN 5008
   const generateAnschreibenText = () => {
     const isSoldier = formData.status === 'soldat_aktiv';
-    const isReservist = formData.status === 'reservist';
 
     const empfaenger = isSoldier
-      ? `An den Disziplinarvorgesetzten\n[Dienststelle / Kompanie / Einheit eintragen]\n[Dienstort]\nz. H. des Einheitsführers\nzur Weiterleitung an das BAPersBw Referat II 2`
-      : `An das\nKarrierecenter der Bundeswehr\n- KDV-Stelle -\n[Straße des zuständigen KarrC eintragen]\n[PLZ Ort des zuständigen KarrC]`;
+      ? `An den Disziplinarvorgesetzten\n[Dienststelle / Kompanie / Einheit eintragen]\n[Dienstort]\nz. H. des Einheitsführers\nzur Weiterleitung an das BAPersBw – Wehrersatzbehörde`
+      : `An das\nBundesamt für das Personalmanagement der Bundeswehr\n- Wehrersatzbehörde -\nMilitärringstraße 1000\n50737 Köln`;
 
-    const pkZeile = (isSoldier || isReservist) && formData.pk 
-      ? `\nPersonenkennziffer (PK): ${formData.pk} | Dienstgrad: ${formData.dienstgrad || '[Dienstgrad]'}`
+    const nameStr = formData.name.trim() || '[Vorname Nachname]';
+    const strasseStr = formData.strasse.trim() || '[Straße und Hausnummer]';
+    const plzOrtStr = formData.plzOrt.trim() || '[PLZ und Wohnort]';
+    const geburtsdatumStr = formData.geburtsdatum.trim() || '[Geburtsdatum]';
+    const geburtsortStr = formData.geburtsort.trim() ? ` in ${formData.geburtsort.trim()}` : '';
+
+    const kontaktdaten: string[] = [];
+    if (formData.telefon.trim()) kontaktdaten.push(`Telefon: ${formData.telefon.trim()}`);
+    if (formData.email.trim()) kontaktdaten.push(`E-Mail: ${formData.email.trim()}`);
+    const kontaktZeile = kontaktdaten.length > 0 ? `\n${kontaktdaten.join(' | ')}` : '';
+
+    const pkZeile = formData.pk.trim()
+      ? `\nPersonenkennziffer (PK): ${formData.pk.trim()}${formData.dienstgrad.trim() ? ` | Dienstgrad: ${formData.dienstgrad.trim()}` : ''}`
       : '';
 
-    const waffenverbotZeile = isSoldier
-      ? `\n\nUnter Hinweis auf § 22 Abs. 4 KDVG beantrage ich hiermit ausdrücklich, mich ab sofort und bis zum rechtskräftigen Abschluss dieses Antragsverfahrens nicht mehr an der Waffe auszubilden und nicht zu Einsätzen oder Wachdiensten mit Schusswaffen heranzuziehen.`
-      : '';
+    const heuteStr = new Date().toLocaleDateString('de-DE');
+    const ortTeil = formData.plzOrt.trim().split(' ').slice(1).join(' ') || '[Wohnort]';
 
-    return `${formData.name}
-${formData.strasse}
-${formData.plzOrt}
-Geboren am: ${formData.geburtsdatum} in ${formData.geburtsort}
-Telefon: ${formData.telefon} | E-Mail: ${formData.email}${pkZeile}
+    return `${nameStr}
+${strasseStr}
+${plzOrtStr}
+Geboren am: ${geburtsdatumStr}${geburtsortStr}${kontaktZeile}${pkZeile}
 
-Ort: ${formData.plzOrt.split(' ')[1] || 'Berlin'}, den ${new Date().toLocaleDateString('de-DE')}
+Ort: ${ortTeil}, den ${heuteStr}
 
 ${empfaenger}
 
 
-Betreff: Antrag auf Anerkennung als Kriegsdienstverweigerer nach Art. 4 Abs. 3 Grundgesetz (GG) in Verbindung mit § 1 ff. Kriegsdienstverweigerungsgesetz (KDVG)
+Betreff: Antrag auf Anerkennung als Kriegsdienstverweigerer nach Art. 4 Abs. 3 Satz 1 Grundgesetz (GG) in Verbindung mit § 1 ff. Kriegsdienstverweigerungsgesetz (KDVG)
 
 Sehr geehrte Damen und Herren,
 
-hiermit beantrage ich förmlich meine Anerkennung als Kriegsdienstverweigerer gemäß Artikel 4 Absatz 3 Satz 1 des Grundgesetzes für die Bundesrepublik Deutschland sowie nach den Bestimmungen des Gesetzes über die Verweigerung des Kriegsdienstes mit der Waffe (KDVG).
+hiermit beantrage ich meine Anerkennung als Kriegsdienstverweigerer gemäß Artikel 4 Absatz 3 Satz 1 des Grundgesetzes für die Bundesrepublik Deutschland sowie nach den Bestimmungen des Kriegsdienstverweigerungsgesetzes (KDVG).
 
-Ich verweigere aus Gewissensgründen den Kriegsdienst mit der Waffe und lehne jede Beteiligung am Waffendienst sowie an militärischen Tötungshandlungen unumkehrbar ab.${waffenverbotZeile}
+Ich verweigere aus Gewissensgründen den Kriegsdienst mit der Waffe und lehne jede Beteiligung am Waffendienst ab.
 
-Zur Begründung meines Antrags verweise ich auf die beigefügten gesetzlich geforderten Unterlagen:
+Fristwahrend verweise ich auf die gesetzlich geforderten Anlagen gemäß § 2 KDVG:
 
 1. Ausführliche persönliche Darlegung meiner Gewissensgründe (Anlage 1)
 2. Vollständiger tabellarischer Lebenslauf (Anlage 2)
 
-Ich versichere, dass die Darlegungen zu meinen Gewissensgründen von mir persönlich und wahrheitsgemäß verfasst wurden.
+Ich versichere, dass die Darlegung meiner Gewissensgründe von mir persönlich und eigenständig verfasst wurde.
 
-Bitte bestätigen Sie mir unverzüglich den Eingang dieses Antrags sowie der beigefügten Anlagen schriftlich.
+Ich bitte um schriftliche Bestätigung des Eingangs dieses Antrags.
 
 
 Mit freundlichen Grüßen
 
 
 _____________________________________________
-(Unterschrift ${formData.name})`;
+(Unterschrift ${nameStr})`;
   };
 
   // Text-Gliederung für den Lebenslauf
   const generateLebenslaufText = () => {
+    const nameStr = formData.name.trim() || '[Vorname Nachname]';
+    const geburtsdatumStr = formData.geburtsdatum.trim() || '[Geburtsdatum]';
+    const geburtsortStr = formData.geburtsort.trim() || '[Geburtsort]';
+    const strasseStr = formData.strasse.trim() || '[Straße und Hausnummer]';
+    const plzOrtStr = formData.plzOrt.trim() || '[PLZ und Wohnort]';
+    const heuteStr = new Date().toLocaleDateString('de-DE');
+
     return `TABELLARISCHER LEBENSLAUF
-(Schwerpunkt: Wertevermittlung & persönliche Entwicklung)
+(Anlage 2 gemäß § 2 KDVG)
 
-Name: ${formData.name}
-Geburtsdatum: ${formData.geburtsdatum} in ${formData.geburtsort}
-Anschrift: ${formData.strasse}, ${formData.plzOrt}
+PERSÖNLICHE DATEN
+Name, Vorname: ${nameStr}
+Geburtsdatum & -ort: ${geburtsdatumStr} in ${geburtsortStr}
+Anschrift: ${strasseStr}, ${plzOrtStr}
 
-SCHULISCHER & BERUFLICHER WERDEGANG
-• [Jahr - Jahr]: Grundschule [Schulname, Ort]
-• [Jahr - Jahr]: Weiterführende Schule [Schulname, Ort] - Abschluss: [Abschluss]
-• [Jahr - Jahr]: Berufsausbildung / Studium [Fachrichtung, Institution]
-• [Jahr - heute]: Berufliche Tätigkeit als [Berufsbezeichnung]
+SCHULISCHER WERDEGANG
+• [Monat/Jahr – Monat/Jahr]: Grundschule [Schulname, Ort]
+• [Monat/Jahr – Monat/Jahr]: Weiterführende Schule [Schulname, Ort] - Abschluss: [Abschlussbezeichnung]
+
+BERUFLICHER WERDEGANG / STUDIUM / AUSBILDUNG
+• [Monat/Jahr – Monat/Jahr]: Berufsausbildung / Studium [Fachrichtung, Einrichtung]
+• [Monat/Jahr – heute]: Berufliche Tätigkeit als [Berufsbezeichnung]
 
 FAMILIÄRE PRÄGUNG & WERTEVERMITTLUNG
-• Erziehung im Elternhaus (z. B. friedliche Konfliktlösung, Respekt vor dem Leben)
-• Relevante familiäre Vorbilder oder prägende generationenübergreifende Erfahrungen
+• Erziehung im Elternhaus (z. B. Einstellungen zu Gewaltfreiheit und Konfliktlösung)
+• Familienhintergrund und prägende Lebenserfahrungen
 
-SOZIALES & ETHICHES ENGAGEMENT
-• [Jahr - Jahr]: Ehrenamtliche Tätigkeit / Engagement in [Verein, Kirche, Hilfsorganisation, Zivilgesellschaft]
-• Praktika im sozialen Bereich oder Betreuung von Mitmenschen
+EHRENAMT & SOZIALES ENGAGEMENT
+• [Monat/Jahr – Monat/Jahr]: Engagement in Vereinen, sozialen Einrichtungen oder Initiativen
 
-FREIZEIT, SPORT & KONFLIKTVERHALTEN
-• Hobbys und Interessen (z. B. Mannschaftssportarten mit Fairplay, Kunst, Musik)
-• Verzicht auf gewaltbetonte Aktivitäten / Haltung zu Schusswaffen
+FREIZEIT, SPORT & LEBENSFORM
+• Freizeitaktivitäten und Interessen
+• Haltung zu Waffen und gewaltsamen Auseinandersetzungen im Alltag
 
-[Ort], den ${new Date().toLocaleDateString('de-DE')}
+[Ort], den ${heuteStr}
 
 
 _____________________________________________
-(Unterschrift ${formData.name})`;
+(Unterschrift ${nameStr})`;
   };
 
-  // Leitfaden für die Gewissensbegründung
+  // Offene Reflexionsfragen & Gliederungsstruktur für die Gewissensbegründung
   const generateBegruendungGliederung = () => {
-    return `STRUKTUR-LEITFADEN FÜR DIE PERSÖNLICHE GEWISSENSBEGRÜNDUNG
-(Art. 4 Abs. 3 GG / Rechtsprechung des Bundesverwaltungsgerichts BVerwG)
+    return `GLIEDERUNGSSTRUKTUR & OFFENE REFLEXIONSFRAGEN
+FÜR DIE EIGENSTÄNDIGE GEWISSENSBEGRÜNDUNG (Anlage 1 gemäß § 2 KDVG)
 
-ACHTUNG: Das Bundesamt (BAPersBw) lehnt standardisierte Mustertexte sofort ab! 
-Schreiben Sie diesen Text unbedingt in Ihren eigenen Worten anhand der folgenden 5 Prüfungsstufen:
+WICHTIGER HINWEIS DES BAFzA:
+Das Bundesamt für Familie und zivilgesellschaftliche Aufgaben (BAFzA) betont ausdrücklich:
+„Vorgefertigte Formulierungen, Internet-Vorlagen oder durch künstliche Intelligenz generierte Texte werden nicht akzeptiert. Bei der Prüfung steht die Ernsthaftigkeit Ihrer persönlichen Gewissensentscheidung im Fokus.“ (Quelle: bafza.de)
 
-1. EINLEITUNG & MORALISCHES GRUNDVERSTÄNDNIS
-- Was bedeutet für mich der Wert menschlichen Lebens?
-- Welche inneren moralischen Gebote leiten mein tägliches Handeln?
-- Kurze Definition der eigenen Gewissensentscheidung (ernst, unumkehrbar, zwingend).
+Verwenden Sie daher keine kopierten Fremdtexte, sondern beantworten Sie die folgenden Fragen in Ihren eigenen Worten:
 
-2. BIOGRAFISCHE WURZELN & ENTWICKLUNG
-- Wie wurde meine gewaltfreie Haltung in Kindheit und Jugend geformt?
-- Gab es in der Familie Gespräche über Krieg, Gewalt oder den Schutz des Lebens?
-- Welche Schlüsselerfahrungen in Schule, Ausbildung oder Freundeskreis haben mich geprägt?
+1. MORALISCHES GRUNDVERSTÄNDNIS & GEWISSENSBEGRIFF
+- Was verstehen Sie persönlich unter der Würde und dem Wert menschlichen Lebens?
+- Welche moralischen oder ethischen Grundsätze leiten Ihr tägliches Handeln?
 
-3. DAS SCHLÜSSELERLEBNIS / DER ENTSCHEIDENDE WENDEPUNKT
-- Welches konkrete Ereignis hat mir unmissverständlich bewusst gemacht, dass ich niemals eine Waffe gegen einen Menschen richten kann?
-- (Für aktive Soldaten / Reservisten): Warum war ich früher zum Dienst bereit, und was genau hat in meinem Inneren diesen grundlegenden Sinneswandel ausgelöst?
-- Beschreibung der emotionalen und rationalen Auseinandersetzung mit der Tötungshandlung.
+2. BIOGRAFISCHE ENTWICKLUNG & PRÄGUNG
+- Wie wurde Ihre Einstellung zu Gewalt und Krieg in Elternhaus, Schule oder Umfeld geformt?
+- Gab es bestimmte Ereignisse oder Gespräche, die Ihre Haltung nachhaltig geprägt haben?
 
-4. KONKRETE REQUISITEN DES GEWISSENSNOTSTANDS
-- Die Unmöglichkeit, zwischen „gerechtem“ und „ungerechtem“ Krieg zu unterscheiden.
-- Das unausweichliche Dilemma: Befehl gegen das eigene Gewissen.
-- Warum ich den Befehl, auf einen Menschen zu schießen, verweigern MUSS – selbst unter Androhung von Nachteilen.
+3. DER SCHLÜSSELMOMENT / SINNESWANDEL
+- Welches konkrete Ereignis oder welche Erkenntnis hat Sie zu der Überzeugung geführt, niemals eine Waffe gegen einen Menschen richten zu können?
+- (Bei aktiven Soldaten / Reservisten): Warum waren Sie früher zum Dienst an der Waffe bereit, und wodurch hat sich Ihr Sinneswandel nachvollziehbar vollzogen?
 
-5. GEWALTFREIHEIT IM ALLTAG & KONFLIKTSITUATIONEN
-- Wie verhalte ich mich im realen Leben, wenn ich provoziert oder angegriffen werde?
-- Konkretes Beispiel friedlicher Konfliktlösung aus meinem persönlichen Alltag.
-- Haltung zu Notwehr und Zivilcourage.
+4. GEWISSENSNOTSTAND BEIM DIENST AN DER WAFFE
+- Warum ist es Ihnen persönlich absolut unmöglich, im Ernstfall Befehlen zum Einsatz von Schusswaffen zu folgen?
+- Warum lehnen Sie das Töten von Menschen bedingungslos ab?
 
-6. SCHLUSSWORT
-- Bekräftigung, dass diese Haltung unumstößlich ist.
-- Bereitschaft, einen zivilen Ersatzdienst bzw. Friedensdienst zum Wohle der Allgemeinheit zu leisten.
+5. CONFLICT-HANDLUNG IM ALLTAG
+- Wie verhalten Sie sich im realen Leben, wenn Sie mit Konflikten, Provokationen oder Aggressionen konfrontiert werden?
+- Über welche gewaltfreien Lösungswege verfügen Sie?
 
-Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogramm verfasst und eigenhändig unterschrieben.`;
+6. ABSCHLIESSENDE ERKLÄRUNG
+- Bekräftigung, dass Ihre Gewissensentscheidung ernsthaft, unumkehrbar und absolut bindend ist.
+
+(Hinweis: Die Begründung sollte ausgiebig, persönlich und eigenhändig verfasst sowie handschriftlich unterschrieben werden.)`;
   };
 
   const handleCopy = () => {
+    checkValidation();
     let content = '';
     if (activeTab === 'anschreiben') content = generateAnschreibenText();
     else if (activeTab === 'lebenslauf') content = generateLebenslaufText();
@@ -161,6 +191,7 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
   };
 
   const handlePrint = () => {
+    checkValidation();
     window.print();
   };
 
@@ -169,44 +200,56 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 text-xs font-black uppercase tracking-wider mb-3">
-            Interaktiver Dokumenten-Assistent
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider mb-3">
+            Dokumenten-Vorbereitung
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
-            KDV-Musterantrag &amp; Begründungs-Leitfaden
+            KDV-Musterschreiben &amp; Begründungs-Gliederung
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600">
-            Erstellen Sie in wenigen Schritten ein formgerechtes Anschreiben nach DIN 5008 sowie die geforderten Gliederungen für Lebenslauf und Gewissensbegründung.
+          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            Erstellen Sie ein formloses Anschreiben nach DIN 5008 sowie die Gliederungsstrukturen für Lebenslauf und persönliche Gewissensbegründung.
           </p>
         </div>
 
-        {/* Warning Banner regarding Plagiarism */}
+        {/* Offizieller BAFzA Hinweis */}
         <div className="max-w-5xl mx-auto mb-8 p-4 rounded-xl bg-amber-50 border border-amber-300 text-slate-900 text-xs sm:text-sm flex items-start gap-3 shadow-sm">
           <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div>
-            <span className="font-black text-amber-950 block text-sm">
-              Rechtlicher Hinweis zur Gewissensbegründung:
+            <span className="font-bold text-amber-950 block text-sm">
+              Amtlicher Hinweis des BAFzA zur Gewissensbegründung:
             </span>
             <p className="mt-0.5 text-slate-700 leading-relaxed">
-              Das behördliche Prüfverfahren beim BAPersBw verlangt eine <strong>höchstpersönliche Gewissensentscheidung</strong>. Das Verwenden von vorgefertigten Textschablonen aus dem Internet führt im Regelfall zur Anhörung oder unmittelbaren Ablehnung. Nutzen Sie unsere Gliederung daher als inhaltliches Gerüst für Ihre eigenen Gedanken.
+              „Vorgefertigte Formulierungen, Internet-Vorlagen oder durch künstliche Intelligenz generierte Texte werden nicht akzeptiert. Bei der Prüfung steht die Ernsthaftigkeit Ihrer persönlichen Gewissensentscheidung im Fokus.“ (Quelle: bafza.de)
+              Erstellen Sie Ihre Begründung daher stets eigenständig anhand unserer Gliederungsfragen.
             </p>
           </div>
         </div>
 
+        {validationWarning && (
+          <div className="max-w-5xl mx-auto mb-6 p-4 rounded-xl bg-slate-100 border border-slate-400 text-slate-900 text-xs sm:text-sm flex items-start gap-2.5">
+            <AlertCircle className="w-5 h-5 text-slate-700 shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-bold block">Hinweis zu unvollständigen Angaben:</strong>
+              <p>{validationWarning}</p>
+            </div>
+          </div>
+        )}
+
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Form Configuration (4 cols) */}
+          {/* Form Configuration (4 cols) */}
           <div className="lg:col-span-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4">
-            <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider flex items-center gap-2">
+            <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-2">
               <FileText className="w-4 h-4 text-amber-600" />
-              <span>Ihre Stammdaten</span>
+              <span>Stammdaten eingeben</span>
             </h3>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Vollständiger Name</label>
+                <label className="block font-bold text-slate-700 mb-1">Name, Vorname *</label>
                 <input
                   type="text"
+                  placeholder="z. B. Vorname Nachname"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -214,9 +257,10 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Straße &amp; Hausnummer</label>
+                <label className="block font-bold text-slate-700 mb-1">Straße &amp; Hausnummer *</label>
                 <input
                   type="text"
+                  placeholder="z. B. Musterstraße 1"
                   value={formData.strasse}
                   onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -224,9 +268,10 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">PLZ &amp; Wohnort</label>
+                <label className="block font-bold text-slate-700 mb-1">PLZ &amp; Wohnort *</label>
                 <input
                   type="text"
+                  placeholder="z. B. 10115 Berlin"
                   value={formData.plzOrt}
                   onChange={(e) => setFormData({ ...formData, plzOrt: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -235,9 +280,10 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Geburtsdatum</label>
+                  <label className="block font-bold text-slate-700 mb-1">Geburtsdatum *</label>
                   <input
                     type="text"
+                    placeholder="TT.MM.JJJJ"
                     value={formData.geburtsdatum}
                     onChange={(e) => setFormData({ ...formData, geburtsdatum: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -247,6 +293,7 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
                   <label className="block font-bold text-slate-700 mb-1">Geburtsort</label>
                   <input
                     type="text"
+                    placeholder="z. B. Berlin"
                     value={formData.geburtsort}
                     onChange={(e) => setFormData({ ...formData, geburtsort: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -254,17 +301,40 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Telefon (optional)</label>
+                  <input
+                    type="text"
+                    placeholder="optional"
+                    value={formData.telefon}
+                    onChange={(e) => setFormData({ ...formData, telefon: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">E-Mail (optional)</label>
+                  <input
+                    type="text"
+                    placeholder="optional"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Aktueller Wehrstatus</label>
+                <label className="block font-bold text-slate-700 mb-1">Wehrstatus</label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as UserStatus })}
                   className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                 >
-                  <option value="ungedient">Ungedienter Bürger</option>
+                  <option value="ungedient_vor_einberufung">Ungedienter (vor Einberufung)</option>
+                  <option value="ungedient_nach_einberufung">Ungedienter (Einberufungsbescheid vorliegend)</option>
                   <option value="soldat_aktiv">Aktiver Soldat (SaZ / FWDL / BS)</option>
                   <option value="reservist">Reservist (ehem. Soldat)</option>
-                  <option value="musterung">Bescheid erhalten (Eilfall)</option>
                 </select>
               </div>
 
@@ -284,7 +354,7 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
                     <label className="block font-bold text-slate-700 mb-1">Dienstgrad</label>
                     <input
                       type="text"
-                      placeholder="z. B. Gefreiter / Olt"
+                      placeholder="z. B. Gefreiter"
                       value={formData.dienstgrad}
                       onChange={(e) => setFormData({ ...formData, dienstgrad: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-white border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -295,16 +365,16 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
             </div>
 
             <div className="pt-3 border-t border-slate-200">
-              <p className="text-[11px] text-slate-500">
-                🔒 Alle Eingaben werden ausschließlich lokal im Arbeitsspeicher Ihres Browsers verarbeitet und nicht gespeichert.
+              <p className="text-[11px] text-slate-500 leading-normal">
+                Eingaben verbleiben lokal in Ihrem Webbrowser und werden weder serverseitig gespeichert noch weitergeleitet.
               </p>
             </div>
           </div>
 
-          {/* Right Column: Interactive Document Preview & Tabs (8 cols) */}
-          <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-300 shadow-lg overflow-hidden">
+          {/* Document Preview & Tabs (8 cols) */}
+          <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-300 shadow-md overflow-hidden">
             
-            {/* Header / Tabs */}
+            {/* Header Tabs */}
             <div className="bg-slate-900 p-2 sm:p-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800">
               <div className="flex items-center gap-1.5">
                 <button
@@ -335,7 +405,7 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
                       : 'text-slate-300 hover:text-white hover:bg-slate-800'
                   }`}
                 >
-                  3. Begründungs-Leitfaden
+                  3. Begründungs-Fragen
                 </button>
               </div>
 
@@ -358,6 +428,12 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
               </div>
             </div>
 
+            {/* Preview Banner */}
+            <div className="bg-slate-100 px-4 py-1.5 border-b border-slate-200 text-[11px] font-bold text-slate-600 flex items-center justify-between">
+              <span>Beispielhafte Textvorschau (Muster)</span>
+              <span>Nach dem Ausdrucken eigenhändig unterschreiben</span>
+            </div>
+
             {/* Document Content Paper */}
             <div id="printable-document" className="p-6 sm:p-8 bg-white font-mono text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-wrap select-text border-b border-slate-100 overflow-x-auto min-h-[480px]">
               {activeTab === 'anschreiben' && generateAnschreibenText()}
@@ -368,11 +444,11 @@ Umfang-Empfehlung: 3 bis 6 DIN-A4-Seiten, handschriftlich oder mit Schreibprogra
             {/* Document Footer Bar */}
             <div className="p-4 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Konform nach DIN 5008 &amp; § 2 KDVG</span>
+                <span className="w-2 h-2 rounded-full bg-slate-700"></span>
+                <span>Musterkonformität nach DIN 5008 &amp; § 2 KDVG</span>
               </div>
               <div className="text-[11px] text-slate-500">
-                * Nach dem Ausdrucken mit eigenhändiger Unterschrift im Original einreichen
+                Im Original mit Unterschrift per Einschreiben beim BAPersBw einreichen
               </div>
             </div>
 

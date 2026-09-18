@@ -14,10 +14,13 @@ import { DatenschutzPage } from './pages/DatenschutzPage';
 import { FristenRechner } from './components/FristenRechner';
 import { Analytics } from '@vercel/analytics/react';
 
-export const App: React.FC = () => {
+export const App: React.FC<{ initialPath?: string }> = ({ initialPath }) => {
   // Parse initial route from window pathname
   const getInitialRoute = (): PageRoute => {
-    const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+    const rawPath = initialPath !== undefined
+      ? initialPath
+      : (typeof window !== 'undefined' ? window.location.pathname : '/');
+    const path = rawPath.replace(/^\/+|\/+$/g, '');
     if (path === 'ablauf') return 'ablauf';
     if (path === 'vorlagen') return 'vorlagen';
     if (path === 'ratgeber') return 'ratgeber';
@@ -33,13 +36,16 @@ export const App: React.FC = () => {
   // Synchronize route state with browser history
   const handleSetRoute = (newRoute: PageRoute) => {
     setCurrentRoute(newRoute);
-    const targetPath = newRoute === 'home' ? '/' : `/${newRoute}`;
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState({ route: newRoute }, '', targetPath);
+    if (typeof window !== 'undefined') {
+      const targetPath = newRoute === 'home' ? '/' : `/${newRoute}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ route: newRoute }, '', targetPath);
+      }
     }
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const onPopState = () => {
       setCurrentRoute(getInitialRoute());
     };
@@ -60,6 +66,16 @@ export const App: React.FC = () => {
       datenschutz: 'Datenschutzerklärung (DSGVO) | kdvantrag.de'
     };
     document.title = titles[currentRoute] || titles.home;
+
+    // Dynamically update canonical link element for GSC indexing
+    let canonicalElement = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonicalElement) {
+      canonicalElement = document.createElement('link');
+      canonicalElement.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalElement);
+    }
+    const canonicalPath = currentRoute === 'home' ? '' : currentRoute;
+    canonicalElement.setAttribute('href', `https://www.kdvantrag.de/${canonicalPath}`);
 
     // Track SPA route change in Vercel Analytics
     if (typeof window !== 'undefined' && (window as unknown as { va?: (type: string, data: object) => void }).va) {

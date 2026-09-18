@@ -101,7 +101,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setRoute }) => {
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 self-start sm:self-auto">
-              <span>Rechtlich validiert</span>
+              <span>Redaktionelle Prüfung nach KDVG &amp; VwVfG</span>
             </div>
           </div>
           <div className="pt-5 text-xs text-slate-600 leading-relaxed font-medium">

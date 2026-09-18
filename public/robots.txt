@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kdvantrag.de/sitemap.xml
+Sitemap: https://www.kdvantrag.de/sitemap.xml
