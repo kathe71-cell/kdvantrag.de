@@ -28,5 +28,18 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "kdvantrag.de"
+        }
+      ],
+      "destination": "https://www.kdvantrag.de/$1",
+      "permanent": true
+    }
   ]
 }
