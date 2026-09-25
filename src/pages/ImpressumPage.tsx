@@ -63,10 +63,6 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
               </p>
             </div>
 
-            <div className="pt-3 border-t border-slate-200">
-              <p className="font-semibold text-slate-900">Umsatzsteuer-Status:</p>
-              <p className="text-slate-600">Kleinunternehmer nach § 19 UStG (keine Ausweisung der Umsatzsteuer).</p>
-            </div>
 
             <div className="pt-3 border-t border-slate-200">
               <p className="font-semibold text-slate-900">Inhaltlich Verantwortlicher gemäß § 18 Abs. 2 MStV:</p>
