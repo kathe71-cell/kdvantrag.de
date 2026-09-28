@@ -96,7 +96,7 @@ export const DatenschutzPage: React.FC<DatenschutzPageProps> = ({ setRoute }) =>
               5. Rechte der betroffenen Person
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Sie haben nach der DSGVO das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77).
+              Sie haben nach der DSGVO das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20), Widerspruch gegen die Verarbeitung (Art. 21) sowie das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77). Zur Ausübung Ihrer Rechte wenden Sie sich bitte an jens@kathe.org.
             </p>
           </div>
 
