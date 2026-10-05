@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Scale, Mail, Phone, ArrowLeft } from 'lucide-react';
+import { Shield, Scale, Mail, ArrowLeft } from 'lucide-react';
 import { PageRoute } from '../types';
 
 interface ImpressumPageProps {
@@ -52,13 +52,6 @@ export const ImpressumPage: React.FC<ImpressumPageProps> = ({ setRoute }) => {
                 <span>E-Mail: </span>
                 <a href="mailto:jens@kathe.org" className="text-amber-800 font-bold hover:underline">
                   jens@kathe.org
-                </a>
-              </p>
-              <p className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-amber-600 shrink-0" />
-                <span>Telefon: </span>
-                <a href="tel:+491786652623" className="text-amber-800 font-bold hover:underline">
-                  +49 178 6652623
                 </a>
               </p>
             </div>

@@ -19,7 +19,7 @@ Vollwertiges, conversion-optimiertes und rechtssicheres Webportal für die Domai
 - **Impressum gem. § 5 DDG & § 18 MStV**:
   - Vollständige Anbieterkennzeichnung mit ladungsfähiger Anschrift:
     `Jens Kathe, Hansastraße 6, 34119 Kassel, Deutschland`
-  - Direkte Kontaktdaten: `jens@kathe.org` | `+49 178 6652623`
+  - Direkte Kontaktdaten: `jens@kathe.org`
   - Hinweis auf Kleinunternehmerregelung nach § 19 UStG
   - Inhaltlich Verantwortlicher nach § 18 Abs. 2 MStV
   - EU-Streitbeilegung (OS-Plattform) & VSBG-Verbraucherhinweis
