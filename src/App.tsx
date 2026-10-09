@@ -10,6 +10,7 @@ import { VorlagenPage } from './pages/VorlagenPage';
 import { RatgeberPage } from './pages/RatgeberPage';
 import { RechnerPage } from './pages/RechnerPage';
 import { ImpressumPage } from './pages/ImpressumPage';
+import ProjektuebernahmePage from './pages/ProjektuebernahmePage';
 import { DatenschutzPage } from './pages/DatenschutzPage';
 import { FristenRechner } from './components/FristenRechner';
 import { Analytics } from '@vercel/analytics/react';
@@ -26,6 +27,7 @@ export const App: React.FC<{ initialPath?: string }> = ({ initialPath }) => {
     if (path === 'ratgeber') return 'ratgeber';
     if (path === 'rechner') return 'rechner';
     if (path === 'rechner-embed') return 'rechner-embed';
+    if (path === 'projektuebernahme') return 'projektuebernahme';
     if (path === 'impressum') return 'impressum';
     if (path === 'datenschutz') return 'datenschutz';
     return 'home';
@@ -115,6 +117,7 @@ export const App: React.FC<{ initialPath?: string }> = ({ initialPath }) => {
         {currentRoute === 'vorlagen' && <VorlagenPage setRoute={handleSetRoute} />}
         {currentRoute === 'ratgeber' && <RatgeberPage setRoute={handleSetRoute} />}
         {currentRoute === 'rechner' && <RechnerPage setRoute={handleSetRoute} />}
+        {currentRoute === 'projektuebernahme' && <ProjektuebernahmePage />}
         {currentRoute === 'impressum' && <ImpressumPage setRoute={handleSetRoute} />}
         {currentRoute === 'datenschutz' && <DatenschutzPage setRoute={handleSetRoute} />}
       </main>

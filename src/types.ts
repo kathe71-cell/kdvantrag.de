@@ -17,4 +17,4 @@ export interface FaqItem {
   source?: string;
 }
 
-export type PageRoute = 'home' | 'ablauf' | 'vorlagen' | 'ratgeber' | 'rechner' | 'rechner-embed' | 'impressum' | 'datenschutz';
+export type PageRoute = 'home' | 'ablauf' | 'vorlagen' | 'ratgeber' | 'rechner' | 'rechner-embed' | 'impressum' | 'datenschutz' | 'projektuebernahme';

@@ -79,13 +79,10 @@ export const DatenschutzPage: React.FC<DatenschutzPageProps> = ({ setRoute }) =>
             </p>
           </div>
 
-          {/* 4. Google AdSense */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
             <h2 className="text-base font-bold text-slate-950">
-              4. Einbindung von Google AdSense
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Auf dieser Website sind Werbeanzeigen über den Dienst Google AdSense (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland) eingebunden. Google AdSense verwendet Cookies und Web Beacons zur Auslieferung von Anzeigen. Rechtsgrundlage für die Verarbeitung personenbezogener Daten ist Ihre Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO.
             </p>
           </div>
 
