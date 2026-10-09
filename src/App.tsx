@@ -65,7 +65,8 @@ export const App: React.FC<{ initialPath?: string }> = ({ initialPath }) => {
       rechner: 'Fristen- und Bearbeitungszeiten-Rechner | kdvantrag.de',
       'rechner-embed': 'KDV Fristen- & Bearbeitungszeiten-Rechner | kdvantrag.de',
       impressum: 'Impressum (§ 5 DDG) | kdvantrag.de',
-      datenschutz: 'Datenschutzerklärung (DSGVO) | kdvantrag.de'
+      datenschutz: 'Datenschutzerklärung (DSGVO) | kdvantrag.de',
+      projektuebernahme: 'Projektübernahme | kdvantrag.de'
     };
     document.title = titles[currentRoute] || titles.home;
 
